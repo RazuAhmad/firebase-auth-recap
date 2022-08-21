@@ -1,0 +1,20 @@
+.navbarUl {
+  display: flex;
+  margin: 12 230px;
+}
+
+.navbarUl li {
+  text-decoration: none;
+  list-style-type: none;
+}
+
+.navbarUl li a {
+  text-decoration: none;
+  margin: 12px 23px;
+  font-size: 23px;
+}
+
+.navbarUl li a:hover {
+  color: blue;
+  background-color: chartreuse;
+}

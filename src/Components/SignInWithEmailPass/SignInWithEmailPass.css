@@ -1,0 +1,13 @@
+.formContainer input {
+  width: 40%;
+  height: 45px;
+}
+
+.formContainer {
+  text-align: center;
+}
+
+.signUpBtn {
+  margin-top: 10px;
+  text-align: center;
+}
