@@ -2,26 +2,26 @@ import React, { useState } from "react";
 import "./SignUpCompo.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
-import UseFirebaseAuth from "../../firebase/UseFirebaseAuth";
+import { Link } from "react-router-dom";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import auth from "../../firebase/firebase.init";
 const SignUpCompo = () => {
-  const [registered, setRegistered] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+  // const [errorMsg, setErrorMsg] = useState("");
+  // const {
+  //   signUpWithEmailPass,
+  //   signInWithEmailPassword,
+  //   errorMsg,
+  //   resetPassword,
+  //   emailPassSignedIn,
+  // } = UseFirebaseAuth();
 
-  const {
-    signUpWithEmailPass,
-    signInWithEmailPassword,
-    errorMsg,
-    resetPassword,
-    emailPassSignedIn,
-  } = UseFirebaseAuth();
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
 
-  const { accessToken } = emailPassSignedIn;
-
-  const handleCheckBox = (event) => {
-    setRegistered(event.target.checked);
-  };
+  // const { accessToken } = user;
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -31,21 +31,33 @@ const SignUpCompo = () => {
     setPassword(e.target.value);
   };
 
+  const handleRetypePassword = (e) => {
+    setRetypePassword(e.target.value);
+  };
+
+  // if (password.length < 6) {
+  //   // setErrorMsg("Password must not be less than 6 character");
+  //   return;
+  // }
+  // if (!password === retypePassword) {
+  //   // setErrorMsg("Your both password need to be matched");
+  //   return;
+  // }
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (registered) {
-      signInWithEmailPassword(email, password);
-    } else {
-      signUpWithEmailPass(email, password);
-    }
+
+    createUserWithEmailAndPassword(email, password);
+    // setErrorMsg("");
+    // updateUserProfile(name);
+    console.log(user, error);
+
     console.log("submitted", email, password);
   };
 
   return (
     <div className="formMaster">
-      <h2 className="text-primary">
-        Please {registered ? "Sign In" : "Sign Up"}
-      </h2>
+      <h2 className="text-primary">Please Sign Up</h2>
       <br />
       <Form onSubmit={handleFormSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -70,20 +82,30 @@ const SignUpCompo = () => {
             placeholder="Password"
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <Form.Check
-            onChange={handleCheckBox}
-            type="checkbox"
-            label="Already have an Account?"
+
+        <Form.Group className="mb-3" controlId="formBasicRetypePassword">
+          <Form.Label>Retype your Password</Form.Label>
+          <Form.Control
+            required
+            onChange={handleRetypePassword}
+            type="password"
+            placeholder="Retype your Password"
           />
         </Form.Group>
-        {errorMsg && <p>{errorMsg}</p>}
-        {registered && <p> {accessToken ? "Successfully Signed In" : ""}</p>}
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        {/* {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>} */}
+        {error && <p style={{ color: "red" }}>{error?.message}</p>}
+        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+          <Link to="/emailPassLogIn">
+            <Button>Already have an Account?</Button>
+          </Link>
+        </Form.Group>
+        {/* {errorMsg && <p>{errorMsg}</p>} */}
+        {/* {registered && <p> {accessToken ? "Successfully Signed In" : ""}</p>} */}
+
+        <input className="btn btn-primary" type="submit" value="Sign Up" />
+
         <Button
-          onClick={() => resetPassword(email)}
+          // onClick={() => resetPassword(email)}
           style={{ marginLeft: "10px" }}
           variant="primary"
         >
