@@ -1,6 +1,6 @@
 import React from "react";
 import "./SignInWithEmailPass.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import auth from "../../firebase/firebase.init";
@@ -20,6 +20,12 @@ const SignInWithEmailPass = () => {
     console.log(user);
   };
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  if (user) {
+    navigate(from, { replace: true });
+  }
   return (
     <>
       <form className="formContainer" onSubmit={handleSubmit(onSubmit)}>
@@ -41,8 +47,8 @@ const SignInWithEmailPass = () => {
         </p>
         <input type="submit" value="Sign In" />
       </form>
-      {error && <p style={{ color: "red" }}>{error?.message}</p>}
       {user && <p>Signed In Successfully</p>}
+      <p style={{ color: "red" }}>{error?.message}</p>
       <p className="signUpBtn">
         New User?{" "}
         <Link to="/singUp">
